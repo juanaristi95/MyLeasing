@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MyLeasing.Web.Data;
 
 namespace MyLeasing.Web
 {
@@ -29,6 +31,15 @@ namespace MyLeasing.Web
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            // le decimos que se conecte a una BD y que utilice el
+            // defaultconnection que añadimos en el appsettings.
+            // Cuando le decimos que utilice el DataContext,
+            // le esta mapeando la tabla Owner.
+            services.AddDbContext<DataContext>(cfg =>
+            {
+                cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
 
