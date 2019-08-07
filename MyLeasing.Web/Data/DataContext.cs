@@ -13,9 +13,20 @@ namespace MyLeasing.Web.Data
         {
 
         }
-        // asignamos las tablas de la BD
+        // asignamos las tablas de la BD        
+
+        public DbSet<Contract> Contracts { get; set; }
+
+        public DbSet<Lessee> Lessees { get; set; }
+
         // aqui le decimos que coja el modelo Owner y lo covierta a una tabla Owners
         public DbSet<Owner> Owners { get; set; }
+
+        public DbSet<Property> Properties { get; set; }
+
+        public DbSet<PropertyImage> PropertyImages { get; set; }
+
+        public DbSet<PropertyType> PropertyTypes { get; set; }
 
     }
 }
