@@ -37,12 +37,13 @@ namespace MyLeasing.Web
             // defaultconnection que añadimos en el appsettings.
             // Cuando le decimos que utilice el DataContext,
             // le esta mapeando la tabla Owner.
+            // Aqui configuramos inyeccion entre seedDB-DataContext
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
-
-
+            // Añadimos inyeccion del seeder de la BD
+            services.AddTransient<SeedDb>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
