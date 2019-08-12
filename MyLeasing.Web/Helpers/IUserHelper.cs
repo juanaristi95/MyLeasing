@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using MyLeasing.Web.Data.Entities;
+using MyLeasing.Web.Models;
 
 namespace MyLeasing.Web.Helpers
 {
@@ -20,5 +21,13 @@ namespace MyLeasing.Web.Helpers
         Task AddUserToRoleAsync(User user, string roleName);
         // Preguntamos a que role pertenece un usuario
         Task<bool> IsUserInRoleAsync(User user, string roleName);
+
+        // Metodos para login/logout.
+        // enviamos el modelo y me devueleve un SignInResult que me 
+        //dice si me pude o no loguear.
+        Task<SignInResult> LoginAsync(LoginViewModel model);
+
+        Task LogoutAsync();
+
     }
 }
