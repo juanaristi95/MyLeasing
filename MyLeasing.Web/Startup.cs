@@ -56,6 +56,10 @@ namespace MyLeasing.Web
             services.AddTransient<SeedDb>();
             // Añadimos inyeccion de la Userhelper
             services.AddScoped<IUserHelper, UserHelper>();
+            // Inyeccion del CombosHelper
+            services.AddScoped<ICombosHelper, CombosHelper>();
+            // Inyeccion del ConverterHelper
+            services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

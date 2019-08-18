@@ -16,13 +16,19 @@ namespace MyLeasing.Web.Controllers
     {
         private readonly DataContext _dataContext;
         private readonly IUserHelper _userHelper;
+        private readonly ICombosHelper _combosHelper;
+        private readonly IConverterHelper _converterHelper;
 
         public OwnersController(
             DataContext dataContext,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            ICombosHelper combosHelper,
+            IConverterHelper converterHelper)
         {
             _dataContext = dataContext;
             _userHelper = userHelper;
+            _combosHelper = combosHelper;
+            _converterHelper = converterHelper;
         }
 
         // GET: Owners
@@ -198,5 +204,60 @@ namespace MyLeasing.Web.Controllers
         {
             return _dataContext.Owners.Any(e => e.Id == id);
         }
+
+        public async Task<IActionResult> AddProperty(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            // findasync busca por la clave primaria por lo que la busquedad es mas rapida
+            var owner = await _dataContext.Owners.FindAsync(id.Value);
+            if (owner == null)
+            {
+                return NotFound();
+            }
+            // estamos creando un objeto de la view model y la estamos cargando
+            // con unos valores iniciales. Desde que la creamos le decimos a que 
+            // dueño pertenece, por medio de OwnerId
+            var model = new PropertyViewModel
+            {
+                OwnerId = owner.Id,
+                PropertyTypes = _combosHelper.GetComboPropertyTypes()
+            };
+            return View(model);
+        }
+
+        /*
+         * Comentamos el metodo debido a que vamos a crear un helper
+         * que nos controle la creacion de este combo box ya que no va 
+         * a ser el unico lugar donde lo debo utilizar.
+         * 
+        private IEnumerable<SelectListItem> GetComboPropertyTypes()
+        {
+            throw new NotImplementedException();
+        }
+        */
+        
+        // para este metodo estamos mandando un propertyviewmodel cuando 
+        // deberiamos enviar un property, por lo que debemos realizar una conversion
+        // para ello creamos un helper
+        [HttpPost]
+        public async Task<IActionResult> AddProperty(PropertyViewModel model)
+        {
+            // si cumplio con todas las dataanotations
+            if (ModelState.IsValid)
+            {
+                // creamos un metodo que se encargue de esa conversion
+                // el 2do parametro es para saber si estoy creando o editando
+                var property = await _converterHelper.ToPropertyAsync(model, true);
+                _dataContext.Properties.Add(property);
+                await _dataContext.SaveChangesAsync();
+                return RedirectToAction($"Details/{model.OwnerId}");
+            }
+            return View(model);
+        }
+
+
     }
 }
