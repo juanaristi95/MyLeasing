@@ -9,10 +9,15 @@ namespace MyLeasing.Web.Helpers
     public class ConverterHelper : IConverterHelper
     {
         private readonly DataContext _datacontext;
+        private readonly ICombosHelper _combosHelper;
 
-        public ConverterHelper(DataContext datacontext)
+        // inyectamos el Combo Helper dentro de una misma inyeccion
+        public ConverterHelper(
+            DataContext datacontext,
+            ICombosHelper CombosHelper)
         {
             _datacontext = datacontext;
+            _combosHelper = CombosHelper;
         }
         // Tenemos el metodo al que le pasamos un propertyViewmodel y nos devuelve
         // un objeto tipo property con sus relaciones
@@ -27,12 +32,39 @@ namespace MyLeasing.Web.Helpers
                 IsAvailable = model.IsAvailable,
                 Neighborhood = model.Neighborhood,
                 Owner = await _datacontext.Owners.FindAsync(model.OwnerId),
+                Price = model.Price,
                 PropertyImages = isNew ? new List<PropertyImage>() : model.PropertyImages,
                 PropertyType = await _datacontext.PropertyTypes.FindAsync(model.PropertyTypeId),
                 Remarks = model.Remarks,
                 Rooms = model.Rooms,
                 SquareMeters = model.SquareMeters,
                 Stratum = model.Stratum
+            };
+        }
+
+        // Tenemos el metodo al que le mandamos un property y nos devuelve
+        // un propertyviewmodel
+        public PropertyViewModel ToPropertyViewModel(Property property)
+        {
+            return new PropertyViewModel
+            {
+                Address = property.Address,
+                Contracts = property.Contracts,
+                HasParkingLot = property.HasParkingLot,
+                Id = property.Id,
+                IsAvailable = property.IsAvailable,
+                Neighborhood = property.Neighborhood,
+                Owner = property.Owner,
+                Price = property.Price,
+                PropertyImages = property.PropertyImages,
+                PropertyType = property.PropertyType,
+                Remarks = property.Remarks,
+                Rooms = property.Rooms,
+                SquareMeters = property.SquareMeters,
+                Stratum = property.Stratum,
+                OwnerId = property.Owner.Id,
+                PropertyTypeId = property.PropertyType.Id,
+                PropertyTypes = _combosHelper.GetComboPropertyTypes()
             };
         }
     }

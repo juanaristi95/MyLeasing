@@ -258,6 +258,39 @@ namespace MyLeasing.Web.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> EditProperty(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            // no puedo utilizar findasync debido a que hago un include
+            var property = await _dataContext.Properties
+                .Include(p => p.Owner)
+                .Include(p => p.PropertyType)
+                .FirstOrDefaultAsync(p => p.Id == id);                
+            if (property == null)
+            {
+                return NotFound();
+            }
+            var model = _converterHelper.ToPropertyViewModel(property);
+            return View(model);
+        }
 
+        [HttpPost]
+        public async Task<IActionResult> EditProperty(PropertyViewModel model)
+        {
+            // si cumplio con todas las dataanotations
+            if (ModelState.IsValid)
+            {
+                // creamos un metodo que se encargue de esa conversion
+                // el 2do parametro es para saber si estoy creando o editando
+                var property = await _converterHelper.ToPropertyAsync(model, false);
+                _dataContext.Properties.Update(property);
+                await _dataContext.SaveChangesAsync();
+                return RedirectToAction($"Details/{model.OwnerId}");
+            }
+            return View(model);
+        }
     }
 }
