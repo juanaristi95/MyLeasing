@@ -8,7 +8,7 @@ namespace MyLeasing.Web.Helpers
 {
     public class ConverterHelper : IConverterHelper
     {
-        private readonly DataContext _datacontext;
+        private readonly DataContext _dataContext;
         private readonly ICombosHelper _combosHelper;
 
         // inyectamos el Combo Helper dentro de una misma inyeccion
@@ -16,9 +16,44 @@ namespace MyLeasing.Web.Helpers
             DataContext datacontext,
             ICombosHelper CombosHelper)
         {
-            _datacontext = datacontext;
+            _dataContext = datacontext;
             _combosHelper = CombosHelper;
         }
+
+        public async Task<Contract> ToContractAsync(ContractViewModel model, bool isNew)
+        {
+            return new Contract
+            {
+                EndDate = model.EndDate.ToUniversalTime(),
+                IsActive = model.IsActive,
+                Lessee = await _dataContext.Lessees.FindAsync(model.LesseeId),
+                Owner = await _dataContext.Owners.FindAsync(model.OwnerId),
+                Price = model.Price,
+                Property = await _dataContext.Properties.FindAsync(model.PropertyId),
+                Remarks = model.Remarks,
+                StartDate = model.StartDate.ToUniversalTime(),
+                Id = isNew ? 0 : model.Id
+            };
+
+        }
+
+        public ContractViewModel ToContractViewModel(Contract contract)
+        {
+            return new ContractViewModel
+            {
+                EndDate = contract.EndDate,
+                IsActive = contract.IsActive,
+                LesseeId = contract.Lessee.Id,
+                OwnerId = contract.Owner.Id,
+                Price = contract.Price,
+                Remarks = contract.Remarks,
+                StartDate = contract.StartDate,
+                Id = contract.Id,
+                Lessees = _combosHelper.GetComboLessees(),
+                PropertyId = contract.Property.Id
+            };
+        }
+
         // Tenemos el metodo al que le pasamos un propertyViewmodel y nos devuelve
         // un objeto tipo property con sus relaciones
         public async Task<Property> ToPropertyAsync(PropertyViewModel model, bool isNew)
@@ -31,10 +66,10 @@ namespace MyLeasing.Web.Helpers
                 Id = isNew ? 0 : model.Id,
                 IsAvailable = model.IsAvailable,
                 Neighborhood = model.Neighborhood,
-                Owner = await _datacontext.Owners.FindAsync(model.OwnerId),
+                Owner = await _dataContext.Owners.FindAsync(model.OwnerId),
                 Price = model.Price,
                 PropertyImages = isNew ? new List<PropertyImage>() : model.PropertyImages,
-                PropertyType = await _datacontext.PropertyTypes.FindAsync(model.PropertyTypeId),
+                PropertyType = await _dataContext.PropertyTypes.FindAsync(model.PropertyTypeId),
                 Remarks = model.Remarks,
                 Rooms = model.Rooms,
                 SquareMeters = model.SquareMeters,
@@ -67,5 +102,7 @@ namespace MyLeasing.Web.Helpers
                 PropertyTypes = _combosHelper.GetComboPropertyTypes()
             };
         }
+
+
     }
 }

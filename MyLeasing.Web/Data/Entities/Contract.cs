@@ -28,13 +28,6 @@ namespace MyLeasing.Web.Data.Entities
         [Display(Name = "Is Active?")]
         public bool IsActive { get; set; }
 
-        // Relaciones con otras tablas
-        public Property Property { get; set; }
-
-        public Owner Owner { get; set; }
-
-        public Lessee Lessee { get; set; }
-
         // mas propiedades
         [Display(Name = "Start Date*")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
@@ -49,6 +42,13 @@ namespace MyLeasing.Web.Data.Entities
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime EndDateLocal => EndDate.ToLocalTime();
+
+        // Relaciones con otras tablas
+        public Property Property { get; set; }
+
+        public Owner Owner { get; set; }
+
+        public Lessee Lessee { get; set; }
     }
 }
 
