@@ -429,7 +429,7 @@ namespace MyLeasing.Web.Controllers
                 var contract = await _converterHelper.ToContractAsync(model, false);
                 _dataContext.Contracts.Update(contract);
                 await _dataContext.SaveChangesAsync();
-                return RedirectToAction($"{nameof(DetailsProperty)}/{model.OwnerId}");
+                return RedirectToAction($"{nameof(DetailsProperty)}/{model.PropertyId}");
             }
 
             return View(model);
