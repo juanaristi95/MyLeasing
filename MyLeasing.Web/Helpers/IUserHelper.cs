@@ -29,7 +29,11 @@ namespace MyLeasing.Web.Helpers
 
         Task LogoutAsync();
 
+        // metodo para eliminar usuarios
        Task<bool> DeleteUserAsync(string email);
+
+        // metodo para actualizar usuarios
+        Task<IdentityResult> UpdateUserAsync(User user);
 
     }
 }
