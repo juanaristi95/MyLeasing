@@ -35,5 +35,8 @@ namespace MyLeasing.Web.Helpers
         // metodo para actualizar usuarios
         Task<IdentityResult> UpdateUserAsync(User user);
 
+        // Verifico que la combinacion de usuario y contraseña sean validos.
+        Task<SignInResult> ValidatePasswordAsync(User user, string password);
+
     }
 }
