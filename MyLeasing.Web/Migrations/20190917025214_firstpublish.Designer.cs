@@ -10,14 +10,14 @@ using MyLeasing.Web.Data;
 namespace MyLeasing.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190811223118_Users")]
-    partial class Users
+    [Migration("20190917025214_firstpublish")]
+    partial class firstpublish
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -257,16 +257,11 @@ namespace MyLeasing.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired();
-
-                    b.Property<int?>("OwnerId");
+                    b.Property<string>("ImageUrl");
 
                     b.Property<int?>("PropertyId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
 
                     b.HasIndex("PropertyId");
 
@@ -442,16 +437,12 @@ namespace MyLeasing.Web.Migrations
                         .HasForeignKey("OwnerId");
 
                     b.HasOne("MyLeasing.Web.Data.Entities.PropertyType", "PropertyType")
-                        .WithMany()
+                        .WithMany("Properties")
                         .HasForeignKey("PropertyTypeId");
                 });
 
             modelBuilder.Entity("MyLeasing.Web.Data.Entities.PropertyImage", b =>
                 {
-                    b.HasOne("MyLeasing.Web.Data.Entities.Owner")
-                        .WithMany("PropertyImages")
-                        .HasForeignKey("OwnerId");
-
                     b.HasOne("MyLeasing.Web.Data.Entities.Property", "Property")
                         .WithMany("PropertyImages")
                         .HasForeignKey("PropertyId");
